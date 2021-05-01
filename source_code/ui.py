@@ -43,8 +43,10 @@ def masterWindow():
     settingsButton = Button(master, text=f"Settings", width=50, command = lambda: settingsPanel())
     settingsButton.pack()
 
-    label2 = Label(master, text="\n")
+    global label2
+    label2 = Label(master, text="\n Total Encounters: 0 \n")
     label2.pack()
+
 # --
 # >> Main window functions
 # --
@@ -58,8 +60,12 @@ def change_label_number(button, num, encounter, encounter_type):
     buttons[button].config(text=f"{encounter_type}: {encountertotal}")
     # Updating the thing to save it. 
     encounters[str(encounter)][str(encounter_type)]  = encountertotal
+    encounters['global']['total_encounters'] = get_total_encounters(encounter)
     save_data(encounters)
-    encounters['global']['total_encounters'] += 1
+
+    #Outputting 
+    global label2
+    label2.config(text=f"\nTotal Encounters: {get_total_encounters(encounter)}\n ")
     print(f"Total Encounters: {encounters['global']['total_encounters']}.")
 
 def load_buttons(encounter):
@@ -78,7 +84,15 @@ def next_button_num():
     global buttons
     return len(buttons)
 
-
+def get_total_encounters(encounter):
+    if encounter in encounters:
+        total = 0
+        for e in  encounters[str(encounter)]:
+            total += encounters[str(encounter)][e] 
+        
+        return total
+    else:
+        return False
 
 # --
 # >> The Settings Panel
