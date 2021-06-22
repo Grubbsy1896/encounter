@@ -6,6 +6,11 @@ from tkinter import *
 from tkinter.ttk import *
 
 from data import load_data, save_data
+
+from pypresence import *
+import time, datetime, struct, asyncio
+from time import time, sleep
+import asyncio
 #from encounter import encounters (Preventing Circular Imports)
 
 
@@ -15,6 +20,9 @@ from data import load_data, save_data
 
 global encounters
 encounters = load_data()
+
+global encountermode
+encountermode = ""
 
 global buttons 
 buttons = []
@@ -36,7 +44,7 @@ def masterWindow():
 
 
     label = Label(master,  
-                text ="Grubbsy's EnCounter | V 0.90") 
+                text ="Grubbsy's EnCounter | V 1") 
     label.pack(pady = 10) 
     #labelTotal = Button(master, text="0")
 
@@ -47,11 +55,14 @@ def masterWindow():
     label2 = Label(master, text="\n Total Encounters: 0 \n")
     label2.pack()
 
+    return master
 # --
 # >> Main window functions
 # --
 def change_label_number(button, num, encounter, encounter_type):
     global buttons
+    global encountermode
+    encountermode = encounter
     # This is the counter/ Number Handling
     # Grabbing the encountertotal as a variable to make it an easier to work with variable. 
     encountertotal = encounters[str(encounter)][str(encounter_type)]
@@ -61,12 +72,14 @@ def change_label_number(button, num, encounter, encounter_type):
     # Updating the thing to save it. 
     encounters[str(encounter)][str(encounter_type)]  = encountertotal
     encounters['global']['total_encounters'] = get_total_encounters(encounter)
+    
     save_data(encounters)
 
     #Outputting 
     global label2
     label2.config(text=f"\nTotal Encounters: {get_total_encounters(encounter)}\n ")
     print(f"Total Encounters: {encounters['global']['total_encounters']}.")
+
 
 def load_buttons(encounter):
     global encounters
@@ -92,7 +105,7 @@ def get_total_encounters(encounter):
         
         return total
     else:
-        return False
+        return 0
 
 # --
 # >> The Settings Panel
@@ -253,3 +266,9 @@ def encountersWindow():
 
     label = Label(window, text=listtext)
     label.pack()
+
+def encounterData():
+    global encountermode
+    return [encountermode, get_total_encounters(encountermode)]
+
+    
